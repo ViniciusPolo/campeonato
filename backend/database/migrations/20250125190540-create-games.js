@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Games', {
+    await queryInterface.createTable('games', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -21,25 +21,31 @@ module.exports = {
       visitor_goals: {
         type: Sequelize.INTEGER
       },
-      local_points: {
-        type: Sequelize.INTEGER
-      },
-      visitor_points: {
-        type: Sequelize.INTEGER
-      },
-      penalties: {
+      penalities: {
         type: Sequelize.BOOLEAN
       },
-      penalties_local_goals: {
+      local_penalty_goals: {
         type: Sequelize.INTEGER
       },
-      penalties_visitor_goals: {
+      visitor_penalty_goals: {
         type: Sequelize.INTEGER
       },
       winner: {
         type: Sequelize.STRING
       },
       eliminated: {
+        type: Sequelize.STRING
+      },
+      local_points: {
+        type: Sequelize.INTEGER
+      },
+      visitor_points: {
+        type: Sequelize.INTEGER
+      },
+      tournament: {
+        type: Sequelize.STRING
+      },
+      round_of: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -53,6 +59,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Games');
+    await queryInterface.dropTable('games');
   }
 };

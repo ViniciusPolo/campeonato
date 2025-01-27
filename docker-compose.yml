@@ -10,16 +10,35 @@ services:
       - DB_HOST=db
       - DB_USER=user
       - DB_PASS=password
-      - DB_NAME=mydb
+      - DB_NAME=copadb
     depends_on:
       - db
+    command: >
+      sh -c "
+      until ! pg_isready -h db -p 5432 -U myuser; do
+        echo 'Waiting for database...';
+        sleep 2;
+      done;
+
+      echo 'Checking if database exists...';
+      PGPASSWORD=mypassword psql -h db -U myuser -d postgres -c '\l' | grep -qw mydb || (
+        echo 'Database does not exist. Running db:create...';
+        npx sequelize-cli db:create;
+      );
+
+      echo 'Running tests...';
+      npm test;
+
+      echo 'Starting application...';
+      npm start;
+      "
 
   db:
     image: postgres:13
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
+      POSTGRES_DB: copadb
     ports:
       - "5432:5432"
     volumes:

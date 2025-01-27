@@ -1,43 +1,24 @@
-'use strict';
+const { Sequelize } = require('sequelize');
+const Teams = require('./teams'); // Your Teams model
+const Tournament = require('./tournament'); // Your Teams model
+const Games = require('./games');
 
-const fs = require('fs');
-const path = require('path');
-const Sequelize = require('sequelize');
-const process = require('process');
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
-const db = {};
+const sequelize = new Sequelize('postgres://user:password@db:5432/copadb', {
+  dialect: 'postgres',
+  logging: false, // Disable logging SQL queries (you can enable it if needed)
+});
 
-let sequelize;
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+const models = {
+  Teams: Teams.init(sequelize), // Initialize the Teams model with sequelize
+  Tournament: Tournament.init(sequelize), // Initialize the Teams model with sequelize
+  Games: Games.init(sequelize), // Initialize the Teams model with sequelize
+};
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
-
-Object.keys(db).forEach(modelName => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+// Make sure to associate models if needed (for future relationships)
+Object.values(models).forEach((model) => {
+  if (typeof model.associate === 'function') {
+    model.associate(models);
   }
 });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
-
-module.exports = db;
+module.exports = { sequelize, models };

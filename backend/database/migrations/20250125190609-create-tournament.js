@@ -12,6 +12,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      year: {
+        type: Sequelize.INTEGER
+      },
       winner: {
         type: Sequelize.STRING
       },

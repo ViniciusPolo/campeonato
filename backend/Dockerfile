@@ -1,8 +1,11 @@
 # Usando imagem base do Node.js
 FROM node:16
 
+# Instala o Python no container
+RUN apt-get update && apt-get install -y python3 python3-pip
+
 # Diretório de trabalho dentro do container
-WORKDIR /app
+WORKDIR /backend
 
 # Copia o package.json e instala as dependências
 COPY package.json ./
